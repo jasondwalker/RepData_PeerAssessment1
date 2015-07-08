@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 ## Introduction
 Dear Peer Reviewer,
@@ -16,13 +11,15 @@ Thank you for your time.
 ###Loading the data
 The data are stored in a zip file, located in the working directory. Our first step is to extract it.
 
-```{r extract}
+
+```r
 data1 <- read.csv(unz("activity.zip","activity.csv"))
 ```
 ###Processing the data
 We need to convert to the correct class of R object, which we can do with:
 
-```{r convert}
+
+```r
 data1$steps    <- as.numeric(data1$steps)
 data1$date     <- as.Date(data1$date, "%Y-%m-%d")
 data1$interval <- factor(data1$interval)
@@ -33,7 +30,8 @@ Here I've used the dplyr package to group by date and summarize. As the data sta
 
 ###Histogram
 
-```{r groupandsummarize, message=FALSE, warning=FALSE}
+
+```r
 library(dplyr)
 
 data2 <- tbl_df(data1)  %>%
@@ -43,7 +41,8 @@ data2 <- tbl_df(data1)  %>%
 
 To show this graphically, I've used the ggplot2 package.
 
-```{r hist, message=FALSE, warning=FALSE}
+
+```r
 library(ggplot2)
 
 g <- ggplot(data2, aes(total))
@@ -53,16 +52,24 @@ g + geom_histogram(fill="white", colour="black") +
     labs(title = "Histogram of steps taken")
 ```
 
+![](PA1_template_files/figure-html/hist-1.png) 
+
 We can see that there are a large number of days in which no activity occurs (perhaps the pedometer was sitting in a drawer for those days) but most of the time the individual concerned took between 10000 and 15000 steps.
 
 ###Mean and Median
 This is most efficiently achieved with the summary() command. (I've stored the result so I can call on it in the text below.)
 
-```{r mean and median}
+
+```r
 data2sum <- summary(data2$total)
 data2sum
 ```
-We can thus see that the mean number of steps taken in a day is `r data2sum["Mean"]` steps, while the median is `r data2sum["Median"]` steps. The fact that the mean is smaller reflects the large number of days with no steps taken.
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       0    6778   10400    9354   12810   21190
+```
+We can thus see that the mean number of steps taken in a day is 9354 steps, while the median is 1.04\times 10^{4} steps. The fact that the mean is smaller reflects the large number of days with no steps taken.
 
 ## What is the average daily activity pattern?
 ###Time series plot
