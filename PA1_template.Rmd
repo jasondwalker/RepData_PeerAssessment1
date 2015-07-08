@@ -4,15 +4,39 @@ output:
   html_document:
     keep_md: true
 ---
+```{r setoptions, echo=FALSE}
+opts_chunk$set(echo=TRUE)
+```
+## Introduction
+Dear Peer Reviewer,  What follows is the first course assignment for the Coursera module "Reproducible Research". On occasion, I have gone beyond what is required by the question; I'm aware that plagiarism is a constant worry to us all, and I hope that by adding one or two extra pieces of information I should keep it 'different'. Hopefully, I won't have added significantly to your job in marking.
 
+Thank you for your time.
 
 ## Loading and preprocessing the data
-
-
+The data are stored in a zip file, located in the working directory. Our first step is to extract it.
+```{r extract}
+data1 <- read.csv(unz("activity.zip","activity.csv"))
+```
+We need to convert to the correct class of R object, which we can do with:
+```{r convert}
+data1$steps    <- as.numeric(data1$steps)
+data1$date     <- as.Date(data1$date, "%Y-%m-%d")
+data1$interval <- factor(data1$interval)
+```
 
 ## What is mean total number of steps taken per day?
+Here I've used the dplyr package to group by date and summarize.
+```{r groupandsummarize}
+library(dplyr)
 
-
+data2 <- tbl_df(data1)  %>%
+        group_by(date)  %>%
+        summarise(total = sum(steps,na.rm=TRUE))
+```
+To show this graphically, I've used the ggplot2 package.
+```{r hist}
+library(ggplot2)
+```
 
 ## What is the average daily activity pattern?
 
