@@ -48,11 +48,11 @@ To show this graphically, I've used the ggplot2 package.
 ```r
 library(ggplot2)
 
-g <- ggplot(data2, aes(total))
-g + geom_histogram(fill="white", colour="black") +
-    labs(x = "Total number of steps taken in a day") +
-    labs(y = "Number of days") +
-    labs(title = "Histogram of steps taken")
+g1 <- ggplot(data2, aes(total))
+g1 + geom_histogram(fill="white", colour="black") +
+     labs(x = "Total number of steps taken in a day") +
+     labs(y = "Number of days") +
+     labs(title = "Histogram of steps taken")
 ```
 
 ![](PA1_template_files/figure-html/hist-1.png) 
@@ -89,10 +89,10 @@ Which we plot thus:
 
 
 ```r
-g <- ggplot(data3, aes(x=interval, y=average, group=1)) 
+g2 <- ggplot(data3, aes(x=interval, y=average, group=1)) 
 #group argument because interval is a factor
-g + geom_line() +
-    scale_x_discrete(
+g2 + geom_line() +
+     scale_x_discrete(
             breaks=c("0","400","800","1200","1600","2000"),
             labels=c("00:00","04:00","08:00","12:00","16:00","20:00")
             )
@@ -167,7 +167,9 @@ So I will begin by giving row one the mean value for interval "0". Then we use a
 
 
 ```r
-datanew$steps[1] <- data3$average[1]
+firstint <- data1 %>% filter(interval=="0")
+datanew$steps[1] <- mean(firstint$steps, na.rm=TRUE)
+
 for(i in seq(along=datanew$steps)){
         if(is.na(datanew$steps[i])){
                 datanew$steps[i] <- datanew$steps[i-1]
@@ -190,14 +192,16 @@ data4 <- tbl_df(datanew)  %>%
 
 
 ```r
-g <- ggplot(data4, aes(total))
-g + geom_histogram(fill="white", colour="black") +
-    labs(x = "Total number of steps taken in a day") +
-    labs(y = "Number of days") +
-    labs(title = "Histogram of steps taken with imputed values")
+g3 <- ggplot(data4, aes(total))
+g3 + geom_histogram(fill="white", colour="black") +
+     labs(x = "Total number of steps taken in a day") +
+     labs(y = "Number of days") +
+     labs(title = "Histogram of steps taken with imputed values")
 ```
 
 ![](PA1_template_files/figure-html/hist2-1.png) 
+
+The eagle-eyed among you will have noticed that this chart is identical to the one above. Took me a while to work out why, but the answer is simply that my 'method' has effectively replaced almost all of the NAs with zeros. Adding zeros doesn't change the number of days that you've taken a given number of steps, so no reason for the histogram to change.
 
 Mean and Median
 
@@ -256,10 +260,10 @@ And lastly, our lineplot.
 
 
 ```r
-g <- ggplot(data5, aes(x=interval, y=average, group=1)) 
-g + geom_line() +
-   facet_grid(day~.) +       
-    scale_x_discrete(
+g4 <- ggplot(data5, aes(x=interval, y=average, group=1)) 
+g4 + geom_line() +
+     facet_grid(day~.) +       
+     scale_x_discrete(
             breaks=c("0","400","800","1200","1600","2000"),
             labels=c("00:00","04:00","08:00","12:00","16:00","20:00")
             )
